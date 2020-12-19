@@ -1,6 +1,7 @@
 import React from 'react';
 
 import MyForm from './MyForm';
+import Log from './Log';
 import './App.css';
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
                 <MyForm />
             </div>
             <hr className="hr"/>
+            <Log />
         </>
     );
 }

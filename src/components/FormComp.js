@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
+import {db} from './Firebase';
 
 import './App.css';
 // import Data from '../data.json';
@@ -8,7 +9,6 @@ import './App.css';
 const MyForm = ({template}) => {
     let { register, handleSubmit } = useForm();
     let {fields} = template;
-
 
     const renderFields = (fields) => {
         return fields.map(field => {
@@ -23,10 +23,8 @@ const MyForm = ({template}) => {
     };
 
     const onSubmit = async (values) => {
-        // const { source, destination, time, email } = values;
-        const { source, destination } = values;
-        const MAPS_KEY='AIzaSyAW8v9wOOvEviACg4YbowQEQn0SLplfOJM';
-        const res =  await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${source}&destinations=${destination}&key=${MAPS_KEY}`);
+        const { source, destination, time, email } = values;
+        const res =  await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${source}&destinations=${destination}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`);
         const duration = res.data.rows[0].elements[0].duration.text;
         let durationFinalArr = [0,0,0,0];
         let durationArr = duration.split(' ');
@@ -44,7 +42,22 @@ const MyForm = ({template}) => {
                 durationFinalArr[3] = Number(durationArr[index-1]);
             }
         }); 
-        console.log(durationFinalArr);
+        let durF = durationFinalArr[0]*60*24 + durationFinalArr[1]*60 + durationFinalArr[2] + durationFinalArr[3]*(1/60);
+        let clickedTime = new Date().toTimeString().toString().slice(0,5)
+        db.ref('/info').push({email, time, clickedTime, durF}); 
+        // await fetch('http://localhost:4000/' , {
+        //     method: "POST",
+        //     headers: {
+        //         'Content-type': 'application/json'
+        //     },
+        //     body: JSON.stringify(result)
+        // })
+        // .then((response) => response.json())
+        // // .then((result) => { console.log(result); })
+        // await axios.post('/', result)
+        //            .then((res) => console.log(res.data))
+        //            .catch((err) => console.log(err));
+        // console.log(result);
     };
     
     return (

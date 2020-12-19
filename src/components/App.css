@@ -70,6 +70,16 @@ i {
     color: #54c8ff;
 }
 
+.log {
+    text-align: center;
+    margin: 1em;
+}
+
+.log h4 {
+    font-size: 1.25em;
+    
+}
+
 
 
 
