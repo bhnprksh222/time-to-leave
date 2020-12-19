@@ -23,24 +23,28 @@ const MyForm = ({template}) => {
     };
 
     const onSubmit = async (values) => {
-        // console.log(values);
-        // axios
-        //     .post(`${__dirname}/../data.json`, values)
-        //     .then(response => console.log(response))
-        //     .catch(error => console.log(error));
         // const { source, destination, time, email } = values;
         const { source, destination } = values;
-        const KEY = 'AIzaSyAW8v9wOOvEviACg4YbowQEQn0SLplfOJM';
-        // console.log(source);
-        const res = await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${source}&destinations=${destination}&key=${KEY}`);
-        // const duration = res.data.rows[0].elements[0].duration.text.match(/\d+/gm).map(Number);
+        const MAPS_KEY='AIzaSyAW8v9wOOvEviACg4YbowQEQn0SLplfOJM';
+        const res =  await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${source}&destinations=${destination}&key=${MAPS_KEY}`);
         const duration = res.data.rows[0].elements[0].duration.text;
-        // let durationArr = [0,0,0,0];
-        // let separatedArr = 
-        // if((duration.match(/min/gm)) === 'min'){
-        //     durationArr[2] = Number(duration.match(/\d+/gm)[0]);
-        // }
-        console.log(duration);
+        let durationFinalArr = [0,0,0,0];
+        let durationArr = duration.split(' ');
+        durationArr.forEach((el, index) => {
+            if(el === 'day' || el === 'days'){
+                durationFinalArr[0] = Number(durationArr[index-1]);
+            }
+            if(el === 'hour' || el === 'hours'){
+                durationFinalArr[1] = Number(durationArr[index-1]);
+            }
+            if(el === 'min' || el === 'mins'){
+                durationFinalArr[2] = Number(durationArr[index-1]);
+            }
+            if(el === 'sec' || el === 'secs'){
+                durationFinalArr[3] = Number(durationArr[index-1]);
+            }
+        }); 
+        console.log(durationFinalArr);
     };
     
     return (
@@ -134,3 +138,36 @@ export default MyForm;
         <label htmlFor="email">Email <i className="envelope open icon"></i>:</label>
         <input  type="email" placeholder="john@email.com" required/>
     </div> */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // let duration = '2 days 3 hours 4 mins';
+    // let durationFinalArr = [0,0,0,0];
+    // let durationArr = duration.split(' ');
+    // durationArr.forEach((el, index) => {
+    //     if(el === 'day' || el === 'days'){
+    //         durationFinalArr[0] = durationArr[index-1];
+    //     }
+    //     if(el === 'hour' || el === 'hours'){
+    //         durationFinalArr[1] = durationArr[index-1];
+    //     }
+    //     if(el === 'min' || el === 'mins'){
+    //         durationFinalArr[2] = durationArr[index-1];
+    //     }
+    //     if(el === 'sec' || el === 'secs'){
+    //         durationFinalArr[3] = durationArr[index-1];
+    //     }
+    // }); 
+    // console.log(durationFinalArr);
