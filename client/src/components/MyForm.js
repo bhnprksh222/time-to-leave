@@ -10,6 +10,13 @@ const MyForm = () => {
         title: "Time Form",
         fields: [
             {
+                title: 'Name ',
+                type: 'text', 
+                name: 'name',
+                icon: 'user icon',
+                placeholder: 'John Smith'
+            },
+            {
                 title: 'Source ',
                 type: 'text', 
                 name: 'source',
@@ -25,7 +32,7 @@ const MyForm = () => {
             },
             {
                 title: 'Time ',
-                type: 'time', 
+                type: 'datetime-local', 
                 name: 'time',
                 icon: 'clock icon',
                 placeholder: '8:00 PM'

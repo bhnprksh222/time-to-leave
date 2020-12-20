@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import emailjs from 'emailjs-com';
+import timediff from 'timediff';
 
-import {db} from './Firebase';
+
+// import {db} from './Firebase';
 import './App.css';
 
 const MyForm = ({template}) => {
     let { register, handleSubmit } = useForm();
     let {fields} = template;
+
+    const [msg, setMsg] = useState('');
 
     const renderFields = (fields) => {
         return fields.map(field => {
@@ -23,7 +27,8 @@ const MyForm = ({template}) => {
     };
 
     const onSubmit = async (values) => {
-        const { source, destination, time, email } = values;
+
+        const { name, source, destination, time, email } = values;
         const res =  await axios.get(`https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=${source}&destinations=${destination}&key=${process.env.REACT_APP_GOOGLE_API_KEY}`);
         const duration = res.data.rows[0].elements[0].duration.text;
         let durationFinalArr = [0,0,0,0];
@@ -42,28 +47,47 @@ const MyForm = ({template}) => {
                 durationFinalArr[3] = Number(durationArr[index-1]);
             }
         }); 
-        let durF = durationFinalArr[0]*60*24 + durationFinalArr[1]*60 + durationFinalArr[2] + durationFinalArr[3]*(1/60);
-        let clickedTime = new Date().toTimeString().toString().slice(0,5)
-        db.ref('/info').push({ source, destination, time, email, clickedTime, durF}); 
-        emailjs.sendForm('mail_service', 'YOUR_TEMPLATE_ID', e.target, 'YOUR_USER_ID')
-            .then((result) => {
-                console.log(result.text);
-            }, (error) => {
-                console.log(error.text);
-            });
-        // await fetch('http://localhost:4000/' , {
-        //     method: "POST",
-        //     headers: {
-        //         'Content-type': 'application/json'
-        //     },
-        //     body: JSON.stringify(result)
-        // })
-        // .then((response) => response.json())
-        // // .then((result) => { console.log(result); })
-        // await axios.post('/', result)
-        //            .then((res) => console.log(res.data))
-        //            .catch((err) => console.log(err));
-        // console.log(result);
+        let durF = Math.round(durationFinalArr[0]*60*24 + durationFinalArr[1]*60 + durationFinalArr[2] + durationFinalArr[3]*(1/60));
+        // let clickedTime = new Date().toTimeString().toString().slice(0,5);
+        let clickedTime = (new Date().toISOString()).slice(0,10) + ' ' + (new Date().toTimeString()).slice(0,8);
+        let t = time.split('T').join(' ') + ':00';
+        const fd = timediff(new Date(),time);
+
+        const fdInMin = Math.round(fd.hours*60 + fd.minutes + (fd.seconds/60)) ;
+
+        const x = fdInMin - durF;
+        if(x < 0) {
+            setMsg('You are delayed!');
+        } else if(x > 0) {
+            setMsg('You have ' + (x) + ' minutes left to start the journey'); 
+        }
+
+        const result = {
+            name: name,
+            source : source, 
+            destination : destination, 
+            t : t, 
+            email : email, 
+            clickedTime : clickedTime,
+            msg: msg
+        };
+
+        console.log(result);
+        
+
+        await axios({
+            url: 'http://localhost:8080/api/data',
+            method: 'POST',
+            data: result
+        })
+        .then(() => console.log('DATA SENT TO SERVER'))
+        .catch(()=>console.log('INTERNAL SERVER ERROR!'));
+        
+        // const data = await axios({
+        //     url: 'http://localhost:8080/',
+        //     method: 'GET'
+        // });
+        // console.log(data.data);
     };
     
     return (
@@ -90,6 +114,84 @@ export default MyForm;
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+//!
+//!firebase code
+// db.ref('/info').push({ source, destination, time, email, clickedTime, durF}); 
+        // emailjs.sendForm('mail_service', 'YOUR_TEMPLATE_ID', e.target, 'YOUR_USER_ID')
+        //     .then((result) => {
+        //         console.log(result.text);
+        //     }, (error) => {
+        //         console.log(error.text);
+        //     });
+
+
+
+
+
+
+
+        // source, destination, time, email, clickedTime
+        // var clickedTime = new Date('2020-12-20T16:53'),
+        //     time = new Date('2020-12-21T16:53'),
+        //     clickedTimeInSeconds = clickedTime.getTime() / 1000,
+        //     timeInSeconds = time.getTime() / 1000,
+        //     difference = Math.abs(clickedTimeInSeconds - timeInSeconds);
+
+        //     const timeArr = [0,0,0];
+
+        // if (difference < 60) {
+        //     timeArr[2] = difference;
+        // } else if (difference < 3600) {
+        //     timeArr[1] = Math.floor(difference / 60);
+        // } else {
+        //     timeArr[0] = Math.floor(difference / 3600);
+        // }
+
+        // console.log(timeArr);
+
+
+
+
+
+
+
+
+        // const ta = time.split(':').map((el) => Number(el));
+        // const cta = clickedTime.split(':').map((el) => Number(el));
+
+        // console.log(ta);
+        // console.log(cta);
+        // var resT = [0,0];
+        // let resT = [];
+
+        // if(cta[0] > ta[0]) {
+        //     console.log('delay');
+        // } 
+        // else if (cta[0] < ta[0]) {
+        //     if(cta[1]<ta[1]) {
+        //         resT[0] = ta[0] - cta[0];
+        //         resT[1] = ta[1] - cta[1];
+        //     } else if(cta[1]>ta[1]) {
+        //         ta[0]--;
+        //         resT[1] = ta[1]+ 60 - cta[1];
+        //         resT[0] = ta[0] - cta[0];
+        //     }
+        // };
+
+        // const timeDiff = (resT[0] * 60 + resT[1]);
+//!
 
 
 

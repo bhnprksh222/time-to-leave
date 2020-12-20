@@ -12,7 +12,7 @@ const App = () => {
                 <MyForm />
             </div>
             <hr className="hr"/>
-            <Log />
+            <Log key={Math.Random} />
         </>
     );
 }
