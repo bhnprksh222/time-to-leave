@@ -61,7 +61,7 @@ const MyForm = ({template}) => {
         } else if(x > 0) {
             setMsg('You have ' + (x) + ' minutes left to start the journey'); 
         }
-
+        
         const result = {
             name: name,
             source : source, 
@@ -72,26 +72,31 @@ const MyForm = ({template}) => {
             msg: msg
         };
 
+        
         console.log(result);
         
-
-        await axios({
-            url: 'http://localhost:8080/api/data',
-            method: 'POST',
-            data: result
-        })
-        .then(() => console.log('DATA SENT TO SERVER'))
-        .catch(()=>console.log('INTERNAL SERVER ERROR!'));
         
-        // const data = await axios({
-        //     url: 'http://localhost:8080/',
-        //     method: 'GET'
-        // });
-        // console.log(data.data);
-    };
-    
-    return (
-        <div>
+        // await axios({
+        //     url: 'http://localhost:8080/api/data',
+        //     method: 'POST',
+        //     data: result
+        // })
+        // .then(() => {
+        //     console.log('DATA SENT TO SERVER');
+        //     window.location.reload();
+        //     // setMsg('');
+        // })
+        // .catch(()=>console.log('INTERNAL SERVER ERROR! : FROM REACT'));
+        
+        const data = await axios({
+                url: 'http://localhost:8080/',
+                method: 'GET'
+            });
+            console.log(data.data);
+        };
+        
+        return (
+            <div>
             <form className="ui form" id="timeForm" onSubmit={handleSubmit(onSubmit)}>
                 <div className="field" key={Math.random}>
                     {renderFields(fields)}

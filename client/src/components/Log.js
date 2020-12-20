@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 
-import {db} from './Firebase';
+// import {db} from './Firebase';
 import './App.css'
 
 class Log extends Component {
 
-    constructor(props) {
-        super(props);
-        // this.state = {infoList : []}
-    }
+    // constructor(props) {
+    //     super(props);
+    //     // this.state = {infoList : []}
+    // }
 
     state = {
         info: []
@@ -25,7 +25,7 @@ class Log extends Component {
     //     });  
     // }
 
-    componentDidMount = () => {
+    componentDidMount = () =>{
         this.getData();
     }
 

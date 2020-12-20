@@ -11,8 +11,8 @@ const App = () => {
                 <h1>It's <span style={{color: '#54c8ff'}}>time</span> to leave!</h1>
                 <MyForm />
             </div>
-            <hr className="hr"/>
-            <Log key={Math.Random} />
+            <hr className="hr" />
+            <Log />
         </>
     );
 }
