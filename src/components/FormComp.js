@@ -1,10 +1,10 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
-import {db} from './Firebase';
+import emailjs from 'emailjs-com';
 
+import {db} from './Firebase';
 import './App.css';
-// import Data from '../data.json';
 
 const MyForm = ({template}) => {
     let { register, handleSubmit } = useForm();
@@ -44,7 +44,13 @@ const MyForm = ({template}) => {
         }); 
         let durF = durationFinalArr[0]*60*24 + durationFinalArr[1]*60 + durationFinalArr[2] + durationFinalArr[3]*(1/60);
         let clickedTime = new Date().toTimeString().toString().slice(0,5)
-        db.ref('/info').push({email, time, clickedTime, durF}); 
+        db.ref('/info').push({ source, destination, time, email, clickedTime, durF}); 
+        emailjs.sendForm('mail_service', 'YOUR_TEMPLATE_ID', e.target, 'YOUR_USER_ID')
+            .then((result) => {
+                console.log(result.text);
+            }, (error) => {
+                console.log(error.text);
+            });
         // await fetch('http://localhost:4000/' , {
         //     method: "POST",
         //     headers: {
