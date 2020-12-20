@@ -26,8 +26,7 @@ const DataSchema = new Schema({
         required: true
     },
     msg : {
-        type: String,
-        required: true
+        type: String
     }
 });
 

@@ -14,10 +14,13 @@
     "axios": "^0.21.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "firebase": "^8.2.1",
     "firebase-functions": "^3.13.0",
+    "mailgen": "^2.0.14",
     "mongoose": "^5.11.8",
     "morgan": "^1.10.0",
+    "node-cron": "^2.0.3",
     "nodemailer": "^6.4.17",
     "nodemailer-smtp-transport": "^2.7.4"
   },
